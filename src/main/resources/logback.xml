@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="5 minutes" debug="false">
+    <!-- 设置默认值 -->
+    <property name="log.location"   value="." />
+    <property name="log.level"      value="DEBUG" />
+    <property name="log.allout"     value="STDOUT" />
+
+    <!-- 可以从config文件中获取最新的log.location/log.level/log.allout值 -->
+    <property file="conf/config.properties"/>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] [%-5level] - [%logger{50}:%line] - [requestId:%X{traceId}] [callerId:%X{caller}] [serverId:%X{server}] %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="ALL_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/data0/logs/java/dragonfly/dragonfly_all.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>/data0/logs/java/dragonfly/dragonfly_all.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
+            <maxHistory>2</maxHistory>
+            <TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <MaxFileSize>200MB</MaxFileSize>
+            </TimeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] [%-5level] - [%logger{50}:%line] - [requestId:%X{traceId}] [callerId:%X{caller}] [serverId:%X{server}] %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="INFO_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <file>/data0/logs/java/dragonfly/dragonfly_app.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--在工程目录下自动生成logs文件夹 -->
+            <FileNamePattern>/data0/logs/java/dragonfly/dragonfly_app.log.%d{yyyy-MM-dd}</FileNamePattern>
+            <MaxHistory>15</MaxHistory>
+        </rollingPolicy>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] [%-5level] - [%logger{50}:%line] - [requestId:%X{traceId}] [callerId:%X{caller}] [serverId:%X{server}] %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="WARN_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>WARN</level>
+        </filter>
+        <file>/data0/logs/java/dragonfly/dragonfly_warn.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--在工程目录下自动生成logs文件夹 -->
+            <FileNamePattern>/data0/logs/java/dragonfly/dragonfly_warn.log.%d{yyyy-MM-dd}</FileNamePattern>
+            <MaxHistory>15</MaxHistory>
+        </rollingPolicy>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] [%-5level] - [%logger{50}:%line] - [requestId:%X{traceId}] [callerId:%X{caller}] [serverId:%X{server}] %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <file>/data0/logs/java/dragonfly/dragonfly_error.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--在工程目录下自动生成logs文件夹 -->
+            <FileNamePattern>/data0/logs/java/dragonfly/dragonfly_error.log.%d{yyyy-MM-dd}</FileNamePattern>
+            <MaxHistory>15</MaxHistory>
+        </rollingPolicy>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] [%-5level] - [%logger{50}:%line] - [requestId:%X{traceId}] [callerId:%X{caller}] [serverId:%X{server}] %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="ACC_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+           <Encoding>UTF-8</Encoding>
+        <file>/data0/logs/java/dragonfly/dragonfly_acc.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>/data0/logs/java/dragonfly/dragonfly_acc.log.%d{yyyy-MM-dd}</FileNamePattern>
+            <MaxHistory>15</MaxHistory>
+        </rollingPolicy>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] [%-5level] - [%logger{50}:%line] - [requestId:%X{traceId}] [callerId:%X{caller}] [serverId:%X{server}] %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!--<logger name="org.mybatis.spring.SqlSessionUtils" level="INFO"/>-->
+    <!--<logger name="org.mybatis.spring.transaction" level="INFO"/>-->
+    <!--<logger name="com.apache.ibatis" level="INFO" />-->
+    <!--<logger name="jdbc.connection" level="WARN"/>-->
+    <!--<logger name="jdbc.audit" level="WARN"/>-->
+    <!--<logger name="jdbc.resultset" level="WARN"/>-->
+    <!--<logger name="com.fangdd.newhouse.cic.dao.mapper" level="ERROR"/>-->
+    <!--<logger name="jdbc.sqlonly" level="WARN"/>-->
+    <!--<logger name="jdbc.sqltiming" level="INFO"/>-->
+
+    <logger name="acc" level="INFO" addtivity="false">
+        <appender-ref ref="ACC_FILE"/>
+    </logger>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+        <!-- 设置所有日志的默认输出，本地设置为打印STDOUT, 其它设置为打印到ALL_FILE -->
+        <appender-ref ref="ALL_FILE" />
+        <appender-ref ref="INFO_FILE" />
+        <appender-ref ref="WARN_FILE"/>
+        <appender-ref ref="ERROR_FILE"/>
+    </root>
+</configuration>
