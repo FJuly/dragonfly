@@ -18,11 +18,13 @@ public class Main {
         ArrayList<Future<List<Integer>>> futures = new ArrayList<>();
         ExecutorService executorService = Executors.newCachedThreadPool();
 
+        // executorService.awaitTermination();
+
         for (int i = 2; i <= 10; i++) {
             futures.add(executorService.submit(new FibonacciTask(i)));
         }
         for (Future<List<Integer>> listFuture : futures) {
-            List<Integer>  list = listFuture.get();
+            List<Integer> list = listFuture.get();
             for (Integer var : list) {
                 System.out.print("#" + var);
             }
@@ -31,6 +33,7 @@ public class Main {
 
         ConcurrentHashMap<String, String> hashMap = new ConcurrentHashMap<>();
         HashMap<String, String> map = new HashMap<>(); // HashMap 通过快速失败解决put时候多线程同步问题
+        // Collections.synchronizedMap()  SynchronizedMap
 
     }
 }
@@ -124,7 +127,7 @@ class FibonacciTask implements Callable<List<Integer>> {
 // 24.信号量  Semaphore 允许n个任务同时访问一个资源,迁入迁出对象
 
 // 25.Exchanger 两个线程之间交换数据，主要应用场景，一个任务在创建对象，对象创建代价高昂，
-// 另一个任务在消费这些对象，使用Exchanger在一边生产的同时也可以一遍消费
+// 另一个任务在消费这些对象，使用Exchanger在一边生产的同时也可以一边消费
 
 // 26.并发类比较
 

@@ -44,7 +44,7 @@
             <charset>UTF-8</charset>
             <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] [%-5level] - [%logger{50}:%line] - [requestId:%X{traceId}] [callerId:%X{caller}] [serverId:%X{server}] %msg%n</pattern>
         </encoder>
-    </appender>
+    </appender>·
 
     <appender name="WARN_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
