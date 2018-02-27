@@ -14,7 +14,6 @@ public class EchoServer {
     private final static int port = 6666;
 
     public static void main(String[] args) {
-
         int tmpPort = port;
         if (args != null && args.length > 0) {
             try {

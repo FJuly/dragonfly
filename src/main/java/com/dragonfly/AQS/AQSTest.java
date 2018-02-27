@@ -1,11 +1,16 @@
 package com.dragonfly.AQS;
 
+import java.util.concurrent.DelayQueue;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class AQSTest {
     public static void main(String[] args) {
+        int a = 0;
 
-
+        a = 5;
         try {
             m1();
             m2();
@@ -14,9 +19,6 @@ public class AQSTest {
             System.out.println("exception");
         }
         m2();
-
-
-
 
 
 //        AtomicInteger atomicInteger = new AtomicInteger();

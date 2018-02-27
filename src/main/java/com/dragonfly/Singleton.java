@@ -19,3 +19,23 @@ public class Singleton {
         return singleton;
     }
 }
+
+
+// 写一个DCL
+class DCLSingleton {
+
+    private static DCLSingleton singleton = null;
+
+    private DCLSingleton() {}
+
+    public static DCLSingleton getInstance() {
+        if (singleton == null) {
+            synchronized (DCLSingleton.class) {
+                if (singleton == null) {
+                    singleton = new DCLSingleton();
+                }
+            }
+        }
+        return singleton;
+    }
+}

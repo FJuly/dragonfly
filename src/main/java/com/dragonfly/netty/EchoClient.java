@@ -30,7 +30,6 @@ public class EchoClient {
     }
 
     public void connect(String host, int port) {
-
         //创建NIO处理线程
         EventLoopGroup eventLoopGroup = new NioEventLoopGroup();
         //实例化Bootstrap
@@ -52,7 +51,7 @@ public class EchoClient {
         try {
             //发起连接，将异步操作转为同步阻塞
             ChannelFuture cf = bootstrap.connect(host, port).sync();
-            //同步阻塞至channle关闭后退出
+            //同步阻塞至channel关闭后退出
             cf.channel().closeFuture().sync();
 
         } catch (InterruptedException e) {

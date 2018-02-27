@@ -39,8 +39,8 @@ public class GenericAndCovariance {
         appleList.add(new Apple());
     }
 
-    // List<? super Apple> list里面存储的是Apple的父类
-    // List<? extends Apple> list 里面存放的都是Apple的子类
+    // List<? super Apple> list里面存储的是Apple的某个未知的父类
+    // List<? extends Apple> list 里面存放的都是Apple的某个未知的子类
 
 
     // 通配符是在泛型变量T上进行限制

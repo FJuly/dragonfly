@@ -2,6 +2,7 @@ package com.dragonfly;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.concurrent.*;
 
@@ -32,6 +33,7 @@ public class Main {
         }
 
         ConcurrentHashMap<String, String> hashMap = new ConcurrentHashMap<>();
+        hashMap.values().iterator();
         HashMap<String, String> map = new HashMap<>(); // HashMap 通过快速失败解决put时候多线程同步问题
         // Collections.synchronizedMap()  SynchronizedMap
 
