@@ -1,7 +1,12 @@
 package com.dragonfly;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class DeadLock {
     public static void main(String[] args) throws InterruptedException {
+        AtomicInteger atomicInteger = new AtomicInteger(100);
+        atomicInteger.getAndIncrement();
+
         DeadLockA deadLockA = new DeadLockA();
         DeadLockB deadLockB = new DeadLockB();
 

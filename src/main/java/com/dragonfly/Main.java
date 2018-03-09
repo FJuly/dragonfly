@@ -1,20 +1,19 @@
 package com.dragonfly;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.lang.reflect.Method;
+import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static java.util.Arrays.asList;
 
 public class Main {
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
-//        for (int i = 2; i <= 10; i++) {
+        for (int i = 2; i <= 10; i++) {
 //            new Thread(new FibonacciTask(i)).start();
-//        }
-//        System.out.print("task over!");
+        }
+        System.out.print("task over!");
 
         ArrayList<Future<List<Integer>>> futures = new ArrayList<>();
         ExecutorService executorService = Executors.newCachedThreadPool();
@@ -36,7 +35,6 @@ public class Main {
         hashMap.values().iterator();
         HashMap<String, String> map = new HashMap<>(); // HashMap 通过快速失败解决put时候多线程同步问题
         // Collections.synchronizedMap()  SynchronizedMap
-
     }
 }
 

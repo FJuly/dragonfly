@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class collection {
     public static void main(String[] args) {
@@ -17,5 +19,10 @@ public class collection {
         BigDecimal b2 = new BigDecimal(100);
         String bookAmount = b1.divide(b2, 2, BigDecimal.ROUND_HALF_UP).toString();
         System.out.println(bookAmount);
+
+
+        ConcurrentHashMap<String, String> concurrentHashMap = new ConcurrentHashMap<>();
+//        concurrentHashMap.putIfAbsent();
+
     }
 }

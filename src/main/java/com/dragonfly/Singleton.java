@@ -39,3 +39,51 @@ class DCLSingleton {
         return singleton;
     }
 }
+
+enum Color {
+    RED(1), GREEN(2), BLUE(3);
+
+    private Object object;
+
+
+    private int code;
+
+    public Object getObject() {
+        return object;
+    }
+
+    Color(int code) {
+        this.code = code;
+        object = new Object();
+    }
+
+    public int getCode() {
+        return code;
+    }
+
+    public void test() {
+
+    }
+}
+
+class Color1 {
+
+    private int code;
+
+    public static Color1 RED;
+
+    public static Color1 BLUE;
+
+    private Color1(int param) {
+        code = param;
+    }
+
+    void test() {
+        System.out.println(code);
+    }
+
+    static {
+        RED = new Color1(1);
+        BLUE = new Color1(2);
+    }
+}
