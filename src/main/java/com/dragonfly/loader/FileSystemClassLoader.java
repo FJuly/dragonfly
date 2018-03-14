@@ -26,7 +26,7 @@ public class FileSystemClassLoader extends ClassLoader {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             int bufferSize = 4096;
             byte[] buffer = new byte[bufferSize];
-            int bytesNumRead = 0;
+            int bytesNumRead;
             while ((bytesNumRead = ins.read(buffer)) != -1) {
                 baos.write(buffer, 0, bytesNumRead);
             }

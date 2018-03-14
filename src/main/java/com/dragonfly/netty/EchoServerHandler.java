@@ -10,7 +10,7 @@ public class EchoServerHandler extends ChannelInboundHandlerAdapter {
 
     //channle激活
     @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
     }
 
