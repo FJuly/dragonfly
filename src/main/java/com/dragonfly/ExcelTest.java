@@ -13,7 +13,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ExcelTest {
@@ -33,6 +35,9 @@ public class ExcelTest {
     private final static int salesIndex = 9;
     private final static int cmtPriceIndex = 13;
 
+    private final static int firstCategorIndex = 2;
+    private final static int brandIndex = 5;
+
 
     private final static String filePath = "/Users/fanggang/CDE.xlsx";
 
@@ -40,6 +45,8 @@ public class ExcelTest {
     private static Map<Integer, Integer> cmtTailMap = new HashMap<>();
     private static Map<String, Double> rationMap = new HashMap<>();
 
+    private static List<String> firstCategoryFilterList = new ArrayList<>();
+    private static List<String> brandFilterList = new ArrayList<>();
 
     static {
         tailMap.put(0, -1);
@@ -73,6 +80,8 @@ public class ExcelTest {
         rationMap.put("D", 0.8);
         rationMap.put("E", 1.0);
 
+        firstCategoryFilterList.add("营养保健");
+        brandFilterList.add("GNC 健安喜");
     }
 
     public static void main(String[] args) {
@@ -142,6 +151,8 @@ public class ExcelTest {
     private static void processRow(Row row) {
         String skuId;
         String grade; // 商品等级
+        String firstCategoryStr;
+        String brandStr;
         double cost; // 商品成本价
         double pagePrice; // 页面价
         double frontStore;// 库存
@@ -162,6 +173,10 @@ public class ExcelTest {
         cost = Double.valueOf(getCellStringVal(row.getCell(costIndex)));
         pagePrice = Double.valueOf(getCellStringVal(row.getCell(pagePriceIndex)));
         frontStore = Double.valueOf(getCellStringVal(row.getCell(frontStoreIndex)));
+        firstCategoryStr = getCellStringVal(row.getCell(firstCategorIndex));
+        brandStr = getCellStringVal(row.getCell(brandIndex));
+
+        preCheck(row, firstCategoryStr, brandStr);
 
         String salesStr = getCellStringVal(row.getCell(salesIndex));
         if (!salesStr.equals("null")) {
@@ -206,7 +221,7 @@ public class ExcelTest {
         // 计算最终定价
         if (rulePrice2 >= (pagePrice - downMax) && rulePrice2 <= (pagePrice)) {
             resultPrice = rulePrice2;
-            logger.info("最终建议价为rulePrice2,skuId={}", skuId);
+            logger.info("最终建议价为rulePrice2,skuId={},rowNum={}", skuId, row.getRowNum());
         } else {
             resultPrice = halfUp((rulePrice1 + rulePrice3) / 2);
             logger.info("最终建议价为(rulePrice1+rulePrice3),skuId={}", skuId);
@@ -237,6 +252,17 @@ public class ExcelTest {
         Cell cell = row.createCell(resultPriceIndex);
         cell.setCellValue(resultPrice);
         logger.info("skuId->{},rule1->{}, rule2->{},rule3->{},resultPrice->{},rowNum={}", skuId, rulePrice1, rulePrice2, rulePrice3, resultPrice, row.getRowNum());
+    }
+
+    private static void preCheck(Row row, String firstCategoryStr, String brandStr) {
+        if (firstCategoryFilterList.contains(firstCategoryStr)) {
+            Cell cell = row.createCell(failReasonIndex);
+            cell.setCellValue("一级类目不符合要求");
+        }
+        if (brandFilterList.contains(brandStr)) {
+            Cell cell = row.createCell(failReasonIndex);
+            cell.setCellValue("品牌不符合要求");
+        }
     }
 
     private static double getRulePrice3(double pagePrice, double frontStore, double sales, double downMax) {
