@@ -78,7 +78,7 @@ public class NIOClient {
                     if (count > 0) {
                         receiveText = new String(receivebuffer.array(), 0, count);
                         System.out.println("客户端接受服务器端数据--:" + receiveText);
-                        // client.register(selector, SelectionKey.OP_WRITE);
+                        client.register(selector, SelectionKey.OP_WRITE);
                     }
 
                 } else if (selectionKey.isWritable()) {
@@ -90,7 +90,7 @@ public class NIOClient {
                     sendbuffer.flip();
                     client.write(sendbuffer);
                     System.out.println("客户端向服务器端发送数据--：" + sendText);
-                    // client.register(selector, SelectionKey.OP_READ);
+                    client.register(selector, SelectionKey.OP_READ);
                 }
             }
             selectionKeys.clear();

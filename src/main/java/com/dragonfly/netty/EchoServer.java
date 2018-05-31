@@ -46,8 +46,10 @@ public class EchoServer {
                     protected void initChannel(SocketChannel socketChannel) throws Exception {
                         //绑定处理事件的Handler，这里可以设置多个
                         socketChannel.pipeline().addLast(new EchoServerHandler());
+                        socketChannel.pipeline().addLast(new EchoServerTwoHandler());
                     }
                 });
+
 
         try {
             //绑定本是异步操作,这里将其变为同步阻塞

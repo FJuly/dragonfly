@@ -6,7 +6,6 @@ import java.lang.reflect.Method;
 
 public class ProxyTest {
     public static void main(String[] args) throws IllegalAccessException, InstantiationException, InvocationTargetException {
-
         Class<FancyToy> toy = FancyToy.class;
 
         Method[] methods = toy.getMethods();
@@ -18,6 +17,7 @@ public class ProxyTest {
 
         Field field = fields[0];
         FancyToy newToy = toy.newInstance();
+
     }
 }
 

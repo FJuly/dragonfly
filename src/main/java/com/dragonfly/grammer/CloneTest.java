@@ -1,5 +1,8 @@
 package com.dragonfly.grammer;
 
+
+import java.util.HashSet;
+
 public class CloneTest {
     public static void main(String[] args) throws CloneNotSupportedException {
         CloneSon cloneSon = new CloneSon(2, 3);
@@ -10,7 +13,13 @@ public class CloneTest {
 
         CloneFather cloneFather = new CloneFather(2);
 
+
         System.out.println(cloneFather.d);
+
+        HashSet<String> hashSet = new HashSet<>();
+        hashSet.add("123");
+        hashSet.add("123");
+        System.out.println(hashSet);
     }
 }
 

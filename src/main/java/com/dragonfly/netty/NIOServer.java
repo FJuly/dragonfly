@@ -27,14 +27,15 @@ public class NIOServer {
         ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
         // 服务器配置为非阻塞
         serverSocketChannel.configureBlocking(false);
-        // 检索与此通道关联的服务器套接字
-        ServerSocket serverSocket = serverSocketChannel.socket();
-        // 进行服务的绑定
-        serverSocket.bind(new InetSocketAddress(port));
         // 通过open()方法找到Selector
         selector = Selector.open();
         // 注册到selector，等待连接
         serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
+
+        // 检索与此通道关联的服务器套接字
+        ServerSocket serverSocket = serverSocketChannel.socket();
+        // 进行服务的绑定
+        serverSocket.bind(new InetSocketAddress(port));
         System.out.println("Server Start----8888:");
     }
 
@@ -84,7 +85,7 @@ public class NIOServer {
             if (count > 0) {
                 receiveText = new String(receivebuffer.array(), 0, count);
                 System.out.println("服务器端接受客户端数据--:" + receiveText);
-                // client.register(selector, SelectionKey.OP_WRITE);
+                client.register(selector, SelectionKey.OP_WRITE);
             }
         } else if (selectionKey.isWritable()) {
             //将缓冲区清空以备下次写入
@@ -99,7 +100,7 @@ public class NIOServer {
             //输出到通道
             client.write(sendbuffer);
             System.out.println("服务器端向客户端发送数据--：" + sendText);
-            // client.register(selector, SelectionKey.OP_READ);
+            client.register(selector, SelectionKey.OP_READ);
         }
     }
 

@@ -1,16 +1,12 @@
 package com.dragonfly.netty;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
-public class EchoServerHandler extends ChannelInboundHandlerAdapter {
-
-
+public class EchoServerTwoHandler extends ChannelInboundHandlerAdapter {
     //channle激活
     @Override
-        public void channelActive(ChannelHandlerContext ctx) throws Exception {
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
     }
 
@@ -24,19 +20,7 @@ public class EchoServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 
-        System.out.println("收到数据!");
-
-        ByteBuf buf = (ByteBuf) msg;
-        byte[] req = new byte[buf.readableBytes()];
-        buf.readBytes(req);
-
-        String request = new String(req, "utf-8");
-        System.out.println("Client Request : " + request);
-
-        ByteBuf resp = Unpooled.copiedBuffer(request.getBytes());
-        ctx.writeAndFlush(resp);
-
-        ctx.fireChannelRead(msg);
+        System.out.println("EchoServerTwoHandler!");
     }
 
     //从流中读取数据结束
