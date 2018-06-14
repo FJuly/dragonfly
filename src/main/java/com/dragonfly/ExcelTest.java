@@ -22,24 +22,24 @@ public class ExcelTest {
 
     private static Logger logger = LoggerFactory.getLogger(ExcelTest.class);
 
-    private final static int countRows = 80320;
-    private final static int gradeIndex = 6;
-    private final static int costIndex = 8;
-    private final static int pagePriceIndex = 10;
-    private final static int minPriceIndex = 11;
-    private final static int maxPriceIndex = 12;
+    private final static int countRows = 5241;
+    private final static int gradeIndex = 5;
+    private final static int costIndex = 7;
+    private final static int pagePriceIndex = 9;
+    private final static int minPriceIndex = 10;
+    private final static int maxPriceIndex = 11;
     private final static int skuIdIndex = 0;
-    private final static int failReasonIndex = 17;
-    private final static int resultPriceIndex = 16;
-    private final static int frontStoreIndex = 7;
-    private final static int salesIndex = 9;
-    private final static int cmtPriceIndex = 13;
+    private final static int failReasonIndex = 15;
+    private final static int resultPriceIndex = 14;
+    private final static int frontStoreIndex = 6;
+    private final static int salesIndex = 8;
+    private final static int cmtPriceIndex = 12;
 
-    private final static int firstCategorIndex = 2;
+    private final static int firstCategoryIndex = 2;
     private final static int brandIndex = 5;
 
 
-    private final static String filePath = "/Users/fanggang/CDE.xlsx";
+    private final static String filePath = "/Users/fanggang/严选自营06_04.xlsx";
 
     private static Map<Integer, Integer> tailMap = new HashMap<>();
     private static Map<Integer, Integer> cmtTailMap = new HashMap<>();
@@ -79,9 +79,8 @@ public class ExcelTest {
         rationMap.put("C", 0.6);
         rationMap.put("D", 0.8);
         rationMap.put("E", 1.0);
-
-        firstCategoryFilterList.add("营养保健");
-        brandFilterList.add("GNC 健安喜");
+//        firstCategoryFilterList.add("营养保健");
+//        brandFilterList.add("GNC 健安喜");
     }
 
     public static void main(String[] args) {
@@ -173,30 +172,41 @@ public class ExcelTest {
         cost = Double.valueOf(getCellStringVal(row.getCell(costIndex)));
         pagePrice = Double.valueOf(getCellStringVal(row.getCell(pagePriceIndex)));
         frontStore = Double.valueOf(getCellStringVal(row.getCell(frontStoreIndex)));
-        firstCategoryStr = getCellStringVal(row.getCell(firstCategorIndex));
+        firstCategoryStr = getCellStringVal(row.getCell(firstCategoryIndex));
         brandStr = getCellStringVal(row.getCell(brandIndex));
 
         preCheck(row, firstCategoryStr, brandStr);
 
-        String salesStr = getCellStringVal(row.getCell(salesIndex));
-        if (!salesStr.equals("null")) {
-            sales = Double.valueOf(salesStr);
+        if (row.getCell(salesIndex) != null) {
+            String salesStr = getCellStringVal(row.getCell(salesIndex));
+            if (!salesStr.equals("null")) {
+                sales = Double.valueOf(salesStr);
+            }
         }
-        String cmtPriceStr = getCellStringVal(row.getCell(cmtPriceIndex));
-        if (!cmtPriceStr.equals("null")) {
-            cmtPrice = Double.valueOf(cmtPriceStr);
+
+        if (row.getCell(cmtPriceIndex) != null) {
+            String cmtPriceStr = getCellStringVal(row.getCell(cmtPriceIndex));
+            if (!cmtPriceStr.equals("null")) {
+                cmtPrice = Double.valueOf(cmtPriceStr);
+            }
         }
-        String minPriceStr = getCellStringVal(row.getCell(minPriceIndex));
-        if (!minPriceStr.equals("null")) {   // 各种异常判断下
-            minPrice = Double.valueOf(minPriceStr);
+
+        if (row.getCell(minPriceIndex) != null) {
+            String minPriceStr = getCellStringVal(row.getCell(minPriceIndex));
+            if (!minPriceStr.equals("null")) {   // 各种异常判断下
+                minPrice = Double.valueOf(minPriceStr);
+            }
         }
-        String maxPriceStr = getCellStringVal(row.getCell(maxPriceIndex));
-        if (!maxPriceStr.equals("null")) {
-            maxPrice = Double.valueOf(maxPriceStr);
+
+        if (row.getCell(maxPriceIndex) != null) {
+            String maxPriceStr = getCellStringVal(row.getCell(maxPriceIndex));
+            if (!maxPriceStr.equals("null")) {
+                maxPrice = Double.valueOf(maxPriceStr);
+            }
         }
 
         // 计算downMax
-        downMax = Double.min(Double.min(pagePrice * 0.1, 100), pagePrice - cost - 1);
+        downMax = Double.min(Double.min(pagePrice * 0.17, 150), pagePrice - cost - 1);
         // 计算降价系数
         if (rationMap.get(grade) == null) {
             logger.error("grade err,skuId->{},row->{}", skuId, row.getRowNum());
@@ -214,7 +224,7 @@ public class ExcelTest {
         rulePrice2 = halfUp(rulePrice2);
         // 计算rule3价格
         if (sales != 0) {
-            rulePrice3 = getRulePrice3(pagePrice, frontStore, sales, downMax);
+            rulePrice3 = getRulePrice3(pagePrice, frontStore, sales, downMax, skuId, row.getRowNum());
         } else {
             rulePrice3 = pagePrice - downMax;
         }
@@ -265,18 +275,18 @@ public class ExcelTest {
         }
     }
 
-    private static double getRulePrice3(double pagePrice, double frontStore, double sales, double downMax) {
+    private static double getRulePrice3(double pagePrice, double frontStore, double sales, double downMax, String skuId, int rowNum) {
         double rulePrice3;
         int salesByDay = BigDecimal.valueOf((frontStore / sales) * 30).intValue(); // 库存天期
         if (salesByDay <= 90)
             rulePrice3 = pagePrice;
-        else if (salesByDay >= 360)
+        else if (salesByDay >= 180)
             rulePrice3 = pagePrice - downMax;
         else {
             // y = ax + b, 两组输入计算(a,b), [90, pagePrice],[360, pagePrice - downMax]
-            double a = downMax / -270;
+            double a = downMax / -90;
             double b = pagePrice - a * 90;
-            logger.info("线性方程->pagePrice:{},downMax:{},a:{},b:{}", pagePrice, downMax, a, b);
+            logger.info("线性方程->pagePrice:{},downMax:{},a:{},b:{},skuId:{},rowNum:{}", pagePrice, downMax, a, b, skuId, rowNum);
             rulePrice3 = halfUp(a * salesByDay + b);
         }
         return rulePrice3;
@@ -322,8 +332,8 @@ public class ExcelTest {
             return false;
         }
         // 10% 100
-        return pagePrice >= resultPrice && (BigDecimal.valueOf(pagePrice).subtract(BigDecimal.valueOf(resultPrice)).doubleValue()) <= 100
-                && ((BigDecimal.valueOf(pagePrice).subtract(BigDecimal.valueOf(resultPrice)).doubleValue())) <= pagePrice * 0.1;
+        return pagePrice >= resultPrice && (BigDecimal.valueOf(pagePrice).subtract(BigDecimal.valueOf(resultPrice)).doubleValue()) <= 150
+                && ((BigDecimal.valueOf(pagePrice).subtract(BigDecimal.valueOf(resultPrice)).doubleValue())) <= pagePrice * 0.17;
     }
 
     // 校验美化后的价格，降价幅度要小于0.9
