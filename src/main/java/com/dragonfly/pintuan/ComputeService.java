@@ -31,7 +31,8 @@ class ComputeService {
     void processGoods(Goods goods) {
         Row row = goods.getRow();
         double discount = CmtConfig.discountMap.get(goods.getFirstCategoryStr());
-        double downMax = Double.min(Double.min(goods.getPagePrice() * discount, CmtConfig.constantY),
+        double downMax = Double.min(Double.min(goods.getPagePrice() * discount,
+                CmtConfig.maxPinTuanPriceMap.get(goods.getFirstCategoryStr()) * discount),
                 goods.getPagePrice() - goods.getCost() - 1);
         goods.setDownMax(downMax);
 

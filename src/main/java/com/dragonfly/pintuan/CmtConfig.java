@@ -22,7 +22,7 @@ public class CmtConfig {
     static Map<String, Double> discountMap = new HashMap<>();
     static {
         discountMap.put("美容彩妆", 0.1);
-        discountMap.put("母婴", 0.14);
+        discountMap.put("母婴", 0.17);
         discountMap.put("运动户外", 0.12);
         discountMap.put("个人洗护", 0.14);
         discountMap.put("服装鞋靴", 0.15);
@@ -33,6 +33,23 @@ public class CmtConfig {
         discountMap.put("手表配饰", 0.1);
         discountMap.put("数码家电", 0.05);
         discountMap.put("汽车用品", 0.04);
+    }
+
+    // 最高降价
+    static Map<String, Double> maxPinTuanPriceMap = new HashMap<>();
+    static {
+        maxPinTuanPriceMap.put("美容彩妆", 3000d);
+        maxPinTuanPriceMap.put("母婴", 2000d);
+        maxPinTuanPriceMap.put("运动户外", 3000d);
+        maxPinTuanPriceMap.put("个人洗护", 500d);
+        maxPinTuanPriceMap.put("服装鞋靴", 2000d);
+        maxPinTuanPriceMap.put("营养保健", 1000d);
+        maxPinTuanPriceMap.put("家居生活", 3000d);
+        maxPinTuanPriceMap.put("轻奢", 5000d);
+        maxPinTuanPriceMap.put("环球美食", 1200d);
+        maxPinTuanPriceMap.put("手表配饰", 3000d);
+        maxPinTuanPriceMap.put("数码家电", 3000d);
+        maxPinTuanPriceMap.put("汽车用品", 0d);
     }
 
     // 最小降价
@@ -49,9 +66,7 @@ public class CmtConfig {
         minSpreadMap.put(3000d, 50d);
     }
 
-    private static Map<String, Double> constantYMap = new HashMap<>();
-
-    final static int rowNums = 100;
+    final static int rowNums = 10800;
     final static String filePath = "/Users/fanggang/test-pintuan/AB_1.xlsx";
 
     final static int gradeIndex = 6;
