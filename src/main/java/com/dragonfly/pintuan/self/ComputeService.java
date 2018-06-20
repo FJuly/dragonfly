@@ -1,6 +1,7 @@
-package com.dragonfly.pintuan;
+package com.dragonfly.pintuan.self;
 
 import com.dragonfly.pintuan.bo.Goods;
+import com.dragonfly.pintuan.bo.PriceRangeBo;
 import org.apache.poi.ss.usermodel.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +33,7 @@ class ComputeService {
         Row row = goods.getRow();
         double discount = CmtConfig.discountMap.get(goods.getFirstCategoryStr());
         double downMax = Double.min(Double.min(goods.getPagePrice() * discount,
-                CmtConfig.maxPinTuanPriceMap.get(goods.getFirstCategoryStr()) * discount),
+                CmtConfig.maxSpreadMap.get(goods.getFirstCategoryStr()) * discount),
                 goods.getPagePrice() - goods.getCost() - 1);
         goods.setDownMax(downMax);
 
@@ -61,14 +62,12 @@ class ComputeService {
         // 计算最终定价
         if (checkPriceRange(rulePrice2, downMax, goods.getPagePrice())) {
             goods.setResultPrice(rulePrice2);
-            logger.info("最终建议价为rulePrice2,skuId={},rowNum={}", goods.getSkuId(), row.getRowNum());
         } else {
             goods.setResultPrice((rulePrice1 + rulePrice3) / 2);
-            logger.info("最终建议价为(rulePrice1+rulePrice3),skuId={}", goods.getSkuId());
         }
         // 检查是否满足价差
         if (!isSuitPriceGap(goods.getResultPrice(), goods.getPagePrice())) {
-            double gap = getGap(goods.getPagePrice());
+            double gap = getMinSpreadPrice(goods.getPagePrice());
             double resultGapPrice = goods.getPagePrice() - gap;
             if (!checkPriceRange(resultGapPrice, downMax, goods.getPagePrice())) {
                 logger.error("调整为最小差价后不符合价格区间, skuId={},rowNum={}", goods.getSkuId(), row.getRowNum());
@@ -86,6 +85,8 @@ class ComputeService {
         } else {
             goods.setRemark("尾数优化后不符合区间，不进行优化");
         }
+        logger.info("rule1Price:{}, rule2Price:{}, rule3Price:{},skuId={},row:{}",
+                rulePrice1, rulePrice2, rulePrice3, goods.getSkuId(), row.getRowNum());
     }
 
     private double getRulePrice3(Goods goods) {
@@ -127,16 +128,16 @@ class ComputeService {
 
     private boolean isSuitPriceGap(double resultPrice, double pagePrice) {
         double gap = pagePrice - resultPrice;
-        return gap >= getGap(pagePrice);
+        return gap >= getMinSpreadPrice(pagePrice);
     }
 
-    private double getGap(double pagePrice) {
-        for (Map.Entry<Double, Double> mp : CmtConfig.minSpreadMap.entrySet()) {
-            if (pagePrice <= mp.getKey()) {
-                return mp.getValue();
+    private double getMinSpreadPrice(double pagePrice) {
+        for (PriceRangeBo priceRangeBo : CmtConfig.minSpreadList) {
+            if (pagePrice < priceRangeBo.getUpPrice()) {
+                return priceRangeBo.getMinReductionPrice();
             }
         }
-        return CmtConfig.minSpreadMap.get(-1d);
+        return 0;
     }
 
     private boolean checkPriceRange(double resultPrice, double downMax, double pagePrice) {

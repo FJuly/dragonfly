@@ -1,4 +1,4 @@
-package com.dragonfly.pintuan;
+package com.dragonfly.pintuan.self;
 
 import com.dragonfly.pintuan.bo.Goods;
 import org.apache.commons.lang.StringUtils;
@@ -28,6 +28,10 @@ public class ExcelService {
                 Goods goods = new Goods();
                 initGood(goods, row);
                 computeService.processGoods(goods);
+                Cell failReasonCell = row.createCell(CmtConfig.failReasonIndex);
+                Cell priceCell = row.createCell(CmtConfig.resultPriceIndex);
+                priceCell.setCellValue(goods.getResultPrice());
+                failReasonCell.setCellValue(goods.getRemark());
             }
             FileOutputStream os = new FileOutputStream(CmtConfig.filePath);
             workbook.write(os);

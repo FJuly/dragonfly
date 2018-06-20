@@ -1,4 +1,4 @@
-package com.dragonfly.pintuan;
+package com.dragonfly.pintuan.self;
 
 import java.io.IOException;
 
