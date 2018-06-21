@@ -1,5 +1,6 @@
 package com.dragonfly.pintuan.self;
 
+import com.dragonfly.pintuan.AbstractComputeService;
 import com.dragonfly.pintuan.bo.Goods;
 import com.dragonfly.pintuan.bo.PriceRangeBo;
 import org.apache.poi.ss.usermodel.*;
@@ -8,41 +9,25 @@ import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.HashMap;
-import java.util.Map;
 
-class ComputeService {
+class ComputeService extends AbstractComputeService {
 
     private static Logger logger = LoggerFactory.getLogger(ComputeService.class);
 
-    private static Map<Integer, Integer> tailMap = new HashMap<>();
-    static {
-        tailMap.put(0, -1);
-        tailMap.put(1, -2);
-        tailMap.put(2, -3);
-        tailMap.put(3, 2);
-        tailMap.put(4, 1);
-        tailMap.put(5, 0);
-        tailMap.put(6, 0);
-        tailMap.put(7, 1);
-        tailMap.put(8, 0);
-        tailMap.put(9, 0);
-    }
-
     void processGoods(Goods goods) {
         Row row = goods.getRow();
-        double discount = CmtConfig.discountMap.get(goods.getFirstCategoryStr());
+        double discount = SelfConfig.discountMap.get(goods.getFirstCategoryStr());
         double downMax = Double.min(Double.min(goods.getPagePrice() * discount,
-                CmtConfig.maxSpreadMap.get(goods.getFirstCategoryStr()) * discount),
+                SelfConfig.maxSpreadMap.get(goods.getFirstCategoryStr()) * discount),
                 goods.getPagePrice() - goods.getCost() - 1);
         goods.setDownMax(downMax);
 
-        if (CmtConfig.rationMap.get(goods.getGrade()) == null) {
+        if (SelfConfig.rationMap.get(goods.getGrade()) == null) {
             logger.error("grade err,skuId->{},row->{}", goods.getSkuId(), row.getRowNum());
             goods.setRemark("商品不存在等级分类");
             return;
         }
-        double ration = CmtConfig.rationMap.get(goods.getGrade());
+        double ration = SelfConfig.rationMap.get(goods.getGrade());
         goods.setRation(ration);
 
         // 计算rule1价格
@@ -50,7 +35,7 @@ class ComputeService {
         rulePrice1 = halfUp(rulePrice1);
         goods.setRulePrice1(rulePrice1);
         // 计算rule2价格a
-        double rulePrice2 = CmtConfig.rule2Param * (goods.getMaxPrice() - goods.getMinPrice()) + goods.getMinPrice();
+        double rulePrice2 = SelfConfig.rule2Param * (goods.getMaxPrice() - goods.getMinPrice()) + goods.getMinPrice();
         rulePrice2 = halfUp(rulePrice2);
         // 计算rule3价格
         double rulePrice3;
@@ -85,21 +70,20 @@ class ComputeService {
         } else {
             goods.setRemark("尾数优化后不符合区间，不进行优化");
         }
-        logger.info("rule1Price:{}, rule2Price:{}, rule3Price:{},skuId={},row:{}",
-                rulePrice1, rulePrice2, rulePrice3, goods.getSkuId(), row.getRowNum());
+        logger.info("rule1Price:{}, rule2Price:{}, rule3Price:{},skuId={},row:{}", rulePrice1, rulePrice2, rulePrice3, goods.getSkuId(), row.getRowNum());
     }
 
     private double getRulePrice3(Goods goods) {
         double rulePrice3;
         int salesByDay = BigDecimal.valueOf((goods.getFrontStore() / goods.getSales()) * 30).intValue(); // 库存天期
-        if (salesByDay <= CmtConfig.startDay)
+        if (salesByDay <= SelfConfig.startDay)
             rulePrice3 = goods.getPagePrice();
-        else if (salesByDay >= CmtConfig.endDay)
+        else if (salesByDay >= SelfConfig.endDay)
             rulePrice3 = goods.getPagePrice() - goods.getDownMax();
         else {
             // y = ax + b, 两组输入计算(a,b), [90, pagePrice],[360, pagePrice - downMax]
-            double a = goods.getDownMax() / (CmtConfig.startDay - CmtConfig.endDay);
-            double b = goods.getPagePrice() - a * CmtConfig.startDay;
+            double a = goods.getDownMax() / (SelfConfig.startDay - SelfConfig.endDay);
+            double b = goods.getPagePrice() - a * SelfConfig.startDay;
             logger.info("线性方程->pagePrice:{},downMax:{},a:{},b:{},skuId:{},rowNum:{}", goods.getPagePrice(),
                     goods.getDownMax(), a, b, goods.getSkuId(), goods.getRow().getRowNum());
             rulePrice3 = halfUp(a * salesByDay + b);
@@ -111,36 +95,18 @@ class ComputeService {
         return BigDecimal.valueOf(num).setScale(1, RoundingMode.HALF_UP).doubleValue();
     }
 
-    private double beautifyPrice(double resultPrice) {
-        BigDecimal decimal = new BigDecimal(resultPrice);
-        if (resultPrice >= 13) {
-            // 最终价格 >=13 四舍五入去除小数点
-            int intResultPrice = decimal.setScale(0, RoundingMode.HALF_UP).intValue();
-            int tail = intResultPrice % 10;
-            resultPrice = intResultPrice + tailMap.get(tail);
-        } else {
-            // 小于13小数尾数直接优化尾数直接优化成0.9
-            int intResultPrice = decimal.setScale(0, BigDecimal.ROUND_DOWN).intValue();
-            return intResultPrice + 0.9;
-        }
-        return resultPrice;
-    }
-
     private boolean isSuitPriceGap(double resultPrice, double pagePrice) {
         double gap = pagePrice - resultPrice;
         return gap >= getMinSpreadPrice(pagePrice);
     }
 
+    // 获取最小降价幅度
     private double getMinSpreadPrice(double pagePrice) {
-        for (PriceRangeBo priceRangeBo : CmtConfig.minSpreadList) {
+        for (PriceRangeBo priceRangeBo : SelfConfig.minSpreadList) {
             if (pagePrice < priceRangeBo.getUpPrice()) {
                 return priceRangeBo.getMinReductionPrice();
             }
         }
         return 0;
-    }
-
-    private boolean checkPriceRange(double resultPrice, double downMax, double pagePrice) {
-        return resultPrice >= (pagePrice - downMax) && resultPrice <= pagePrice;
     }
 }

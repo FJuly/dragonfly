@@ -18,22 +18,22 @@ public class ExcelService {
     void readExcel() throws IOException {
         Workbook workbook = null;
         try {
-            workbook = getReadWorkBookType(CmtConfig.filePath);
+            workbook = getReadWorkBookType(SelfConfig.filePath);
             if (workbook == null) {
                 return;
             }
             Sheet sheet = workbook.getSheetAt(0);
-            for (int rowNum = 1; rowNum < CmtConfig.rowNums; rowNum++) {
+            for (int rowNum = 1; rowNum < SelfConfig.rowNums; rowNum++) {
                 Row row = sheet.getRow(rowNum);
                 Goods goods = new Goods();
                 initGood(goods, row);
                 computeService.processGoods(goods);
-                Cell failReasonCell = row.createCell(CmtConfig.failReasonIndex);
-                Cell priceCell = row.createCell(CmtConfig.resultPriceIndex);
+                Cell failReasonCell = row.createCell(SelfConfig.failReasonIndex);
+                Cell priceCell = row.createCell(SelfConfig.resultPriceIndex);
                 priceCell.setCellValue(goods.getResultPrice());
                 failReasonCell.setCellValue(goods.getRemark());
             }
-            FileOutputStream os = new FileOutputStream(CmtConfig.filePath);
+            FileOutputStream os = new FileOutputStream(SelfConfig.filePath);
             workbook.write(os);
             os.close();
         } finally {
@@ -59,33 +59,33 @@ public class ExcelService {
 
     private void initGood(Goods goods, Row row) {
         goods.setRow(row);
-        goods.setSkuId(getCellStringVal(row.getCell(CmtConfig.skuIdIndex)));
-        goods.setGrade(getCellStringVal(row.getCell(CmtConfig.gradeIndex)));
-        goods.setCost(Double.valueOf(getCellStringVal(row.getCell(CmtConfig.costIndex))));
-        goods.setPagePrice(Double.valueOf(getCellStringVal(row.getCell(CmtConfig.pagePriceIndex))));
-        goods.setFrontStore(Double.valueOf(getCellStringVal(row.getCell(CmtConfig.frontStoreIndex))));
-        goods.setFirstCategoryStr(getCellStringVal(row.getCell(CmtConfig.firstCategoryIndex)));
-        goods.setBrandStr(getCellStringVal(row.getCell(CmtConfig.brandIndex)));
-        if (row.getCell(CmtConfig.salesIndex) != null) {
-            String salesStr = getCellStringVal(row.getCell(CmtConfig.salesIndex));
+        goods.setSkuId(getCellStringVal(row.getCell(SelfConfig.skuIdIndex)));
+        goods.setGrade(getCellStringVal(row.getCell(SelfConfig.gradeIndex)));
+        goods.setCost(Double.valueOf(getCellStringVal(row.getCell(SelfConfig.costIndex))));
+        goods.setPagePrice(Double.valueOf(getCellStringVal(row.getCell(SelfConfig.pagePriceIndex))));
+        goods.setFrontStore(Double.valueOf(getCellStringVal(row.getCell(SelfConfig.frontStoreIndex))));
+        goods.setFirstCategoryStr(getCellStringVal(row.getCell(SelfConfig.firstCategoryIndex)));
+        goods.setBrandStr(getCellStringVal(row.getCell(SelfConfig.brandIndex)));
+        if (row.getCell(SelfConfig.salesIndex) != null) {
+            String salesStr = getCellStringVal(row.getCell(SelfConfig.salesIndex));
             if (!salesStr.equals("null")) {
                 goods.setSales(Double.valueOf(salesStr));
             }
         }
-        if (row.getCell(CmtConfig.cmtPriceIndex) != null) {
-            String cmtPriceStr = getCellStringVal(row.getCell(CmtConfig.cmtPriceIndex));
+        if (row.getCell(SelfConfig.cmtPriceIndex) != null) {
+            String cmtPriceStr = getCellStringVal(row.getCell(SelfConfig.cmtPriceIndex));
             if (!cmtPriceStr.equals("null")) {
                 goods.setCmtPrice(Double.valueOf(cmtPriceStr));
             }
         }
-        if (row.getCell(CmtConfig.minPriceIndex) != null) {
-            String minPriceStr = getCellStringVal(row.getCell(CmtConfig.minPriceIndex));
+        if (row.getCell(SelfConfig.minPriceIndex) != null) {
+            String minPriceStr = getCellStringVal(row.getCell(SelfConfig.minPriceIndex));
             if (!minPriceStr.equals("null")) {
                 goods.setMinPrice(Double.valueOf(minPriceStr));
             }
         }
-        if (row.getCell(CmtConfig.maxPriceIndex) != null) {
-            String maxPriceStr = getCellStringVal(row.getCell(CmtConfig.maxPriceIndex));
+        if (row.getCell(SelfConfig.maxPriceIndex) != null) {
+            String maxPriceStr = getCellStringVal(row.getCell(SelfConfig.maxPriceIndex));
             if (!maxPriceStr.equals("null")) {
                 goods.setMaxPrice(Double.valueOf(maxPriceStr));
             }

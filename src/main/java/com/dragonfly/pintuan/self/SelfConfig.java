@@ -4,7 +4,7 @@ import com.dragonfly.pintuan.bo.PriceRangeBo;
 
 import java.util.*;
 
-public class CmtConfig {
+public class SelfConfig {
     // 降价系数
     static Map<String, Double> rationMap = new HashMap<>();
 
@@ -19,7 +19,7 @@ public class CmtConfig {
         rationMap.put("E", 1.0);
     }
 
-    // x参数
+    // 折扣参数
     static Map<String, Double> discountMap = new HashMap<>();
 
     static {
@@ -58,50 +58,23 @@ public class CmtConfig {
     static List<PriceRangeBo> minSpreadList = new ArrayList<>();
 
     static {
-        PriceRangeBo priceRangeBo = new PriceRangeBo();
-        priceRangeBo.setDownPrice(30);
-        priceRangeBo.setUpPrice(30);
-        priceRangeBo.setMinReductionPrice(0);
+        PriceRangeBo priceRangeBo = new PriceRangeBo.Builder().withDownPrice(30).withUpPrice(30).withMinReductionPrice(0).build();
         minSpreadList.add(priceRangeBo);
-        PriceRangeBo priceRangeBo1 = new PriceRangeBo();
-        priceRangeBo.setDownPrice(30);
-        priceRangeBo.setUpPrice(100);
-        priceRangeBo.setMinReductionPrice(5);
+        PriceRangeBo priceRangeBo1 = new PriceRangeBo.Builder().withDownPrice(30).withUpPrice(100).withMinReductionPrice(5).build();
         minSpreadList.add(priceRangeBo1);
-        PriceRangeBo priceRangeBo2 = new PriceRangeBo();
-        priceRangeBo.setDownPrice(100);
-        priceRangeBo.setUpPrice(200);
-        priceRangeBo.setMinReductionPrice(10);
+        PriceRangeBo priceRangeBo2 = new PriceRangeBo.Builder().withDownPrice(100).withUpPrice(200).withMinReductionPrice(10).build();
         minSpreadList.add(priceRangeBo2);
-        PriceRangeBo priceRangeBo3 = new PriceRangeBo();
-        priceRangeBo.setDownPrice(200);
-        priceRangeBo.setUpPrice(300);
-        priceRangeBo.setMinReductionPrice(10);
+        PriceRangeBo priceRangeBo3 = new PriceRangeBo.Builder().withDownPrice(200).withUpPrice(300).withMinReductionPrice(10).build();
         minSpreadList.add(priceRangeBo3);
-        PriceRangeBo priceRangeBo4 = new PriceRangeBo();
-        priceRangeBo.setDownPrice(300);
-        priceRangeBo.setUpPrice(400);
-        priceRangeBo.setMinReductionPrice(10);
+        PriceRangeBo priceRangeBo4 = new PriceRangeBo.Builder().withDownPrice(300).withUpPrice(400).withMinReductionPrice(10).build();
         minSpreadList.add(priceRangeBo4);
-        PriceRangeBo priceRangeBo5 = new PriceRangeBo();
-        priceRangeBo.setDownPrice(400);
-        priceRangeBo.setUpPrice(1000);
-        priceRangeBo.setMinReductionPrice(20);
+        PriceRangeBo priceRangeBo5 = new PriceRangeBo.Builder().withDownPrice(400).withUpPrice(1000).withMinReductionPrice(20).build();
         minSpreadList.add(priceRangeBo5);
-        PriceRangeBo priceRangeBo6 = new PriceRangeBo();
-        priceRangeBo.setDownPrice(1000);
-        priceRangeBo.setUpPrice(2000);
-        priceRangeBo.setMinReductionPrice(30);
+        PriceRangeBo priceRangeBo6 = new PriceRangeBo.Builder().withDownPrice(1000).withUpPrice(2000).withMinReductionPrice(30).build();
         minSpreadList.add(priceRangeBo6);
-        PriceRangeBo priceRangeBo7 = new PriceRangeBo();
-        priceRangeBo.setDownPrice(2000);
-        priceRangeBo.setUpPrice(3000);
-        priceRangeBo.setMinReductionPrice(50);
+        PriceRangeBo priceRangeBo7 = new PriceRangeBo.Builder().withDownPrice(2000).withUpPrice(3000).withMinReductionPrice(50).build();
         minSpreadList.add(priceRangeBo7);
-        PriceRangeBo priceRangeBo8 = new PriceRangeBo();
-        priceRangeBo.setDownPrice(3000);
-        priceRangeBo.setUpPrice(3000);
-        priceRangeBo.setMinReductionPrice(80);
+        PriceRangeBo priceRangeBo8 = new PriceRangeBo.Builder().withDownPrice(3000).withUpPrice(3000).withMinReductionPrice(80).build();
         minSpreadList.add(priceRangeBo8);
     }
 
@@ -124,7 +97,7 @@ public class CmtConfig {
     final static int failReasonIndex = 15;
     final static int resultPriceIndex = 14;
 
-    final static double rule2Param = 0.2; // rule2 系数
+    final static double rule2Param = 0.2; //rule2 系数
     final static int startDay = 90;
     final static int endDay = 360;
 }
