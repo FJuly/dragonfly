@@ -24,7 +24,7 @@ public class NoSelfConfig {
         priceRangeBoList.add(priceRangeBo3);
         PriceRangeBo priceRangeBo4 = new PriceRangeBo.Builder().withDownPrice(1000).withUpPrice(3000).withMinReductionPrice(50).withMaxReductionPrice(200).build();
         priceRangeBoList.add(priceRangeBo4);
-        PriceRangeBo priceRangeBo5 = new PriceRangeBo.Builder().withDownPrice(3000).withUpPrice(3000).withMinReductionPrice(80).withMaxReductionPrice(400).build();
+        PriceRangeBo priceRangeBo5 = new PriceRangeBo.Builder().withDownPrice(3000).withUpPrice(Double.MAX_VALUE).withMinReductionPrice(80).withMaxReductionPrice(400).build();
         priceRangeBoList.add(priceRangeBo5);
     }
 

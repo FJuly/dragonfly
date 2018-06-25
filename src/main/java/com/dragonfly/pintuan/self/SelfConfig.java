@@ -23,8 +23,9 @@ public class SelfConfig {
     static Map<String, Double> discountMap = new HashMap<>();
 
     static {
+        discountMap.put("工厂店", 0.08);
         discountMap.put("美容彩妆", 0.1);
-        discountMap.put("母婴", 0.17);
+        discountMap.put("母婴", 0.14);
         discountMap.put("运动户外", 0.12);
         discountMap.put("个人洗护", 0.14);
         discountMap.put("服装鞋靴", 0.15);
@@ -37,23 +38,25 @@ public class SelfConfig {
         discountMap.put("汽车用品", 0.04);
     }
 
-    // 最高降价
-    static Map<String, Double> maxSpreadMap = new HashMap<>();
+    // 最多降价y
+    static Map<String, Double> maxSpreadYMap = new HashMap<>();
 
     static {
-        maxSpreadMap.put("美容彩妆", 3000d);
-        maxSpreadMap.put("母婴", 2000d);
-        maxSpreadMap.put("运动户外", 3000d);
-        maxSpreadMap.put("个人洗护", 500d);
-        maxSpreadMap.put("服装鞋靴", 2000d);
-        maxSpreadMap.put("营养保健", 1000d);
-        maxSpreadMap.put("家居生活", 3000d);
-        maxSpreadMap.put("轻奢", 5000d);
-        maxSpreadMap.put("环球美食", 1200d);
-        maxSpreadMap.put("手表配饰", 3000d);
-        maxSpreadMap.put("数码家电", 3000d);
-        maxSpreadMap.put("汽车用品", 0d);
+        maxSpreadYMap.put("工厂店", 200d);
+        maxSpreadYMap.put("美容彩妆", 300d);
+        maxSpreadYMap.put("母婴", 280d);
+        maxSpreadYMap.put("运动户外", 360d);
+        maxSpreadYMap.put("个人洗护", 70d);
+        maxSpreadYMap.put("服装鞋靴", 300d);
+        maxSpreadYMap.put("营养保健", 200d);
+        maxSpreadYMap.put("家居生活", 450d);
+        maxSpreadYMap.put("轻奢", 750d);
+        maxSpreadYMap.put("环球美食", 180d);
+        maxSpreadYMap.put("手表配饰", 300d);
+        maxSpreadYMap.put("数码家电", 150d);
+        maxSpreadYMap.put("汽车用品", Double.MAX_VALUE);
     }
+
 
     static List<PriceRangeBo> minSpreadList = new ArrayList<>();
 
@@ -74,30 +77,27 @@ public class SelfConfig {
         minSpreadList.add(priceRangeBo6);
         PriceRangeBo priceRangeBo7 = new PriceRangeBo.Builder().withDownPrice(2000).withUpPrice(3000).withMinReductionPrice(50).build();
         minSpreadList.add(priceRangeBo7);
-        PriceRangeBo priceRangeBo8 = new PriceRangeBo.Builder().withDownPrice(3000).withUpPrice(3000).withMinReductionPrice(80).build();
+        PriceRangeBo priceRangeBo8 = new PriceRangeBo.Builder().withDownPrice(3000).withUpPrice(Double.MAX_VALUE).withMinReductionPrice(80).build();
         minSpreadList.add(priceRangeBo8);
     }
 
-
-    final static int rowNums = 10800;
-    final static String filePath = "/Users/fanggang/test-pintuan/AB_1.xlsx";
-
-    final static int gradeIndex = 6;
-    final static int costIndex = 8;
-    final static int pagePriceIndex = 10;
-    final static int minPriceIndex = 11;
-    final static int maxPriceIndex = 12;
-    final static int skuIdIndex = 0;
-    final static int frontStoreIndex = 7;
-    final static int salesIndex = 9;
-    final static int cmtPriceIndex = 13;
-    final static int firstCategoryIndex = 2;
-    final static int brandIndex = 5;
-
-    final static int failReasonIndex = 15;
-    final static int resultPriceIndex = 14;
-
     final static double rule2Param = 0.2; //rule2 系数
     final static int startDay = 90;
-    final static int endDay = 360;
+    final static int endDay = 180;
+
+    public final static String filePath = "/Users/fanggang/test-pintuan/new_left.xlsx";
+    public final static int rowNums = 240;
+    public final static int gradeIndex = 11;
+    public final static int costIndex = -1;
+    public final static int pagePriceIndex = 7;
+    public final static int minPriceIndex = -1;
+    public final static int maxPriceIndex = -1;
+    public final static int skuIdIndex = 0;
+    public final static int frontStoreIndex = -1;
+    public final static int salesIndex = -1;
+    public final static int cmtPriceIndex = -1;
+    public final static int firstCategoryIndex = 2;
+    public final static int brandIndex = -1;
+    public final static int failReasonIndex = 20;
+    public final static int resultPriceIndex = 19;
 }

@@ -1,6 +1,9 @@
-package com.dragonfly.pintuan.self;
+package com.dragonfly.pintuan;
 
 import com.dragonfly.pintuan.bo.Goods;
+import com.dragonfly.pintuan.noself.NoSelfComputeService;
+import com.dragonfly.pintuan.self.SelfComputeService;
+import com.dragonfly.pintuan.self.SelfConfig;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
@@ -13,7 +16,7 @@ import java.io.IOException;
 
 public class ExcelService {
 
-    private ComputeService computeService = new ComputeService();
+    private NoSelfComputeService computeService = new NoSelfComputeService();
 
     void readExcel() throws IOException {
         Workbook workbook = null;
@@ -59,32 +62,46 @@ public class ExcelService {
 
     private void initGood(Goods goods, Row row) {
         goods.setRow(row);
-        goods.setSkuId(getCellStringVal(row.getCell(SelfConfig.skuIdIndex)));
-        goods.setGrade(getCellStringVal(row.getCell(SelfConfig.gradeIndex)));
-        goods.setCost(Double.valueOf(getCellStringVal(row.getCell(SelfConfig.costIndex))));
-        goods.setPagePrice(Double.valueOf(getCellStringVal(row.getCell(SelfConfig.pagePriceIndex))));
-        goods.setFrontStore(Double.valueOf(getCellStringVal(row.getCell(SelfConfig.frontStoreIndex))));
-        goods.setFirstCategoryStr(getCellStringVal(row.getCell(SelfConfig.firstCategoryIndex)));
-        goods.setBrandStr(getCellStringVal(row.getCell(SelfConfig.brandIndex)));
-        if (row.getCell(SelfConfig.salesIndex) != null) {
+        if (SelfConfig.skuIdIndex != -1) {
+            goods.setSkuId(getCellStringVal(row.getCell(SelfConfig.skuIdIndex)));
+        }
+        if (SelfConfig.gradeIndex != -1) {
+            goods.setGrade(getCellStringVal(row.getCell(SelfConfig.gradeIndex)));
+        }
+        if (SelfConfig.costIndex != -1) {
+            goods.setCost(Double.valueOf(getCellStringVal(row.getCell(SelfConfig.costIndex))));
+        }
+        if (SelfConfig.pagePriceIndex != -1) {
+            goods.setPagePrice(Double.valueOf(getCellStringVal(row.getCell(SelfConfig.pagePriceIndex))));
+        }
+        if (SelfConfig.frontStoreIndex != -1) {
+            goods.setFrontStore(Double.valueOf(getCellStringVal(row.getCell(SelfConfig.frontStoreIndex))));
+        }
+        if (SelfConfig.firstCategoryIndex != -1) {
+            goods.setFirstCategoryStr(getCellStringVal(row.getCell(SelfConfig.firstCategoryIndex)));
+        }
+        if (SelfConfig.brandIndex != -1) {
+            goods.setBrandStr(getCellStringVal(row.getCell(SelfConfig.brandIndex)));
+        }
+        if (SelfConfig.salesIndex != -1 && row.getCell(SelfConfig.salesIndex) != null) {
             String salesStr = getCellStringVal(row.getCell(SelfConfig.salesIndex));
             if (!salesStr.equals("null")) {
                 goods.setSales(Double.valueOf(salesStr));
             }
         }
-        if (row.getCell(SelfConfig.cmtPriceIndex) != null) {
+        if (SelfConfig.cmtPriceIndex != -1 && row.getCell(SelfConfig.cmtPriceIndex) != null) {
             String cmtPriceStr = getCellStringVal(row.getCell(SelfConfig.cmtPriceIndex));
             if (!cmtPriceStr.equals("null")) {
                 goods.setCmtPrice(Double.valueOf(cmtPriceStr));
             }
         }
-        if (row.getCell(SelfConfig.minPriceIndex) != null) {
+        if (SelfConfig.minPriceIndex != -1 && row.getCell(SelfConfig.minPriceIndex) != null) {
             String minPriceStr = getCellStringVal(row.getCell(SelfConfig.minPriceIndex));
             if (!minPriceStr.equals("null")) {
                 goods.setMinPrice(Double.valueOf(minPriceStr));
             }
         }
-        if (row.getCell(SelfConfig.maxPriceIndex) != null) {
+        if (SelfConfig.maxPriceIndex != -1 && row.getCell(SelfConfig.maxPriceIndex) != null) {
             String maxPriceStr = getCellStringVal(row.getCell(SelfConfig.maxPriceIndex));
             if (!maxPriceStr.equals("null")) {
                 goods.setMaxPrice(Double.valueOf(maxPriceStr));

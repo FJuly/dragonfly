@@ -10,15 +10,15 @@ import org.slf4j.LoggerFactory;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-class ComputeService extends AbstractComputeService {
+public class SelfComputeService extends AbstractComputeService {
 
-    private static Logger logger = LoggerFactory.getLogger(ComputeService.class);
+    private static Logger logger = LoggerFactory.getLogger(SelfComputeService.class);
 
-    void processGoods(Goods goods) {
+    public void processGoods(Goods goods) {
         Row row = goods.getRow();
         double discount = SelfConfig.discountMap.get(goods.getFirstCategoryStr());
         double downMax = Double.min(Double.min(goods.getPagePrice() * discount,
-                SelfConfig.maxSpreadMap.get(goods.getFirstCategoryStr()) * discount),
+                SelfConfig.maxSpreadYMap.get(goods.getFirstCategoryStr())),
                 goods.getPagePrice() - goods.getCost() - 1);
         goods.setDownMax(downMax);
 
@@ -32,11 +32,8 @@ class ComputeService extends AbstractComputeService {
 
         // 计算rule1价格
         double rulePrice1 = goods.getPagePrice() - downMax * ration;
-        rulePrice1 = halfUp(rulePrice1);
-        goods.setRulePrice1(rulePrice1);
-        // 计算rule2价格a
+        // 计算rule2价格
         double rulePrice2 = SelfConfig.rule2Param * (goods.getMaxPrice() - goods.getMinPrice()) + goods.getMinPrice();
-        rulePrice2 = halfUp(rulePrice2);
         // 计算rule3价格
         double rulePrice3;
         if (goods.getSales() != 0) {
@@ -57,6 +54,7 @@ class ComputeService extends AbstractComputeService {
             if (!checkPriceRange(resultGapPrice, downMax, goods.getPagePrice())) {
                 logger.error("调整为最小差价后不符合价格区间, skuId={},rowNum={}", goods.getSkuId(), row.getRowNum());
                 goods.setRemark("调整为最小差价后不符合价格区间");
+                goods.setResultPrice(halfUp(goods.getResultPrice()));
                 return;
             } else {
                 goods.setResultPrice(resultGapPrice);
@@ -68,7 +66,8 @@ class ComputeService extends AbstractComputeService {
                 && isSuitPriceGap(beautifulPrice, goods.getPagePrice())) {
             goods.setResultPrice(beautifulPrice);
         } else {
-            goods.setRemark("尾数优化后不符合区间，不进行优化");
+            goods.setResultPrice(halfUp(goods.getResultPrice()));
+            goods.setRemark("尾数优化后不符合区间或最小降价，不进行优化");
         }
         logger.info("rule1Price:{}, rule2Price:{}, rule3Price:{},skuId={},row:{}", rulePrice1, rulePrice2, rulePrice3, goods.getSkuId(), row.getRowNum());
     }
@@ -89,10 +88,6 @@ class ComputeService extends AbstractComputeService {
             rulePrice3 = halfUp(a * salesByDay + b);
         }
         return rulePrice3;
-    }
-
-    private double halfUp(double num) {
-        return BigDecimal.valueOf(num).setScale(1, RoundingMode.HALF_UP).doubleValue();
     }
 
     private boolean isSuitPriceGap(double resultPrice, double pagePrice) {

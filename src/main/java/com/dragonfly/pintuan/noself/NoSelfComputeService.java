@@ -9,13 +9,14 @@ import org.apache.poi.ss.usermodel.Row;
 // 非自营定价处理
 public class NoSelfComputeService extends AbstractComputeService {
 
-    void processGoods(Goods goods) {
+    public void processGoods(Goods goods) {
         Row row = goods.getRow();
         // 计算dm
         double dm = Double.min(getMaxReduction(goods.getPagePrice()), NoSelfConfig.discount * goods.getPagePrice());
         // 计算降价幅度
         double down = dm * NoSelfConfig.noSelfRationMap.get(goods.getGrade());
         double resultPrice = goods.getPagePrice() - down;
+        goods.setResultPrice(resultPrice);
         // 校验拼团价是否满足最小降价幅度
         if (!isSuitPriceGap(resultPrice, goods.getPagePrice())) {
             double gap = getMinReduction(goods.getPagePrice());
@@ -32,6 +33,7 @@ public class NoSelfComputeService extends AbstractComputeService {
             goods.setResultPrice(beautifulPrice);
         } else {
             goods.setRemark("尾数优化后不符合区间，不进行优化");
+            goods.setResultPrice(halfUp(goods.getResultPrice()));
         }
     }
 

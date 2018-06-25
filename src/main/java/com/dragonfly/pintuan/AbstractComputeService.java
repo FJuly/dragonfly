@@ -40,4 +40,8 @@ public abstract class AbstractComputeService {
     protected boolean checkPriceRange(double resultPrice, double downMax, double pagePrice) {
         return resultPrice >= (pagePrice - downMax) && resultPrice <= pagePrice;
     }
+
+    protected double halfUp(double num) {
+        return BigDecimal.valueOf(num).setScale(1, RoundingMode.HALF_UP).doubleValue();
+    }
 }
