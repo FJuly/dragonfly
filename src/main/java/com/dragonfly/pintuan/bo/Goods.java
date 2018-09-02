@@ -6,6 +6,9 @@ public class Goods {
     private String skuId;
     private String grade;
     private String firstCategoryStr;
+    private String secondCategoryStr;
+    private String thirdCategoryStr;
+    private int brandId;
     private String brandStr;
     private double cost;
     private double pagePrice;
@@ -191,5 +194,29 @@ public class Goods {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public String getSecondCategoryStr() {
+        return secondCategoryStr;
+    }
+
+    public void setSecondCategoryStr(String secondCategoryStr) {
+        this.secondCategoryStr = secondCategoryStr;
+    }
+
+    public String getThirdCategoryStr() {
+        return thirdCategoryStr;
+    }
+
+    public void setThirdCategoryStr(String thirdCategoryStr) {
+        this.thirdCategoryStr = thirdCategoryStr;
+    }
+
+    public int getBrandId() {
+        return brandId;
+    }
+
+    public void setBrandId(int brandId) {
+        this.brandId = brandId;
     }
 }

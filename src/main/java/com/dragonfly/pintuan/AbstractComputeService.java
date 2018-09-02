@@ -42,6 +42,6 @@ public abstract class AbstractComputeService {
     }
 
     protected double halfUp(double num) {
-        return BigDecimal.valueOf(num).setScale(1, RoundingMode.HALF_UP).doubleValue();
+        return BigDecimal.valueOf(num).setScale(0, RoundingMode.HALF_UP).doubleValue();
     }
 }

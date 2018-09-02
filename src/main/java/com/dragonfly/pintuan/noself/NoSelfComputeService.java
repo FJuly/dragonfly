@@ -3,14 +3,14 @@ package com.dragonfly.pintuan.noself;
 import com.dragonfly.pintuan.AbstractComputeService;
 import com.dragonfly.pintuan.bo.Goods;
 import com.dragonfly.pintuan.bo.PriceRangeBo;
-import org.apache.poi.ss.usermodel.Row;
 
 
 // 非自营定价处理
 public class NoSelfComputeService extends AbstractComputeService {
 
     public void processGoods(Goods goods) {
-        Row row = goods.getRow();
+        // 各种剔除条件
+
         // 计算dm
         double dm = Double.min(getMaxReduction(goods.getPagePrice()), NoSelfConfig.discount * goods.getPagePrice());
         // 计算降价幅度
@@ -28,12 +28,15 @@ public class NoSelfComputeService extends AbstractComputeService {
             }
         }
         double beautifulPrice = beautifyPrice(goods.getResultPrice());
-        if (checkPriceRange(beautifulPrice, dm, goods.getPagePrice())
-                && isSuitPriceGap(beautifulPrice, goods.getPagePrice())) {
+        if (checkPriceRange(beautifulPrice, dm, goods.getPagePrice()) && isSuitPriceGap(beautifulPrice, goods.getPagePrice())) {
             goods.setResultPrice(beautifulPrice);
         } else {
-            goods.setRemark("尾数优化后不符合区间，不进行优化");
             goods.setResultPrice(halfUp(goods.getResultPrice()));
+            if (!(checkPriceRange(goods.getResultPrice(), dm, goods.getPagePrice()) && isSuitPriceGap(goods.getResultPrice(), goods.getPagePrice()))) {
+                goods.setRemark("尾数优化后不符合区间，不优化，价格四舍五入取整不符合区间");
+            } else {
+                goods.setRemark("尾数优化后不符合区间，四舍五入取整符合区间");
+            }
         }
     }
 

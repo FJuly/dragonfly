@@ -13,32 +13,47 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class ExcelService {
 
-    private NoSelfComputeService computeService = new NoSelfComputeService();
+    // private SelfComputeService computeService = new SelfComputeService();
 
     void readExcel() throws IOException {
         Workbook workbook = null;
         try {
-            workbook = getReadWorkBookType(SelfConfig.filePath);
+            workbook = getReadWorkBookType("/Users/fanggang/test-pintuan/AB_1_test.xlsx");
             if (workbook == null) {
                 return;
             }
             Sheet sheet = workbook.getSheetAt(0);
-            for (int rowNum = 1; rowNum < SelfConfig.rowNums; rowNum++) {
+            Set<String> prodSet = new HashSet<>();
+            for (int rowNum = 1; rowNum < 12586; rowNum++) {
                 Row row = sheet.getRow(rowNum);
-                Goods goods = new Goods();
-                initGood(goods, row);
-                computeService.processGoods(goods);
-                Cell failReasonCell = row.createCell(SelfConfig.failReasonIndex);
-                Cell priceCell = row.createCell(SelfConfig.resultPriceIndex);
-                priceCell.setCellValue(goods.getResultPrice());
-                failReasonCell.setCellValue(goods.getRemark());
+                String segments = getCellStringVal(row.getCell(0));
+                String entities = getCellStringVal(row.getCell(1));
+                String[] segmentsArr = segments.split(",");
+                String[] entitiesArr = entities.split(",");
+                int i = 0;
+                for (String str : entitiesArr) {
+                    if (str.equals("PROD")) {
+                        prodSet.add(segmentsArr[i]);
+                    }
+                    i++;
+                }
+                // Cell priceCell = row.createCell(2);
+                // priceCell.setCellValue("prod");
             }
-            FileOutputStream os = new FileOutputStream(SelfConfig.filePath);
-            workbook.write(os);
-            os.close();
+            // 打印出set
+            for (String str : prodSet) {
+                System.out.println(str);
+            }
+            // FileOutputStream os = new FileOutputStream(SelfConfig.filePath);
+            // workbook.write(os);
+            // os.close();
         } finally {
             IOUtils.closeQuietly(workbook);
         }
@@ -80,8 +95,20 @@ public class ExcelService {
         if (SelfConfig.firstCategoryIndex != -1) {
             goods.setFirstCategoryStr(getCellStringVal(row.getCell(SelfConfig.firstCategoryIndex)));
         }
+        if (SelfConfig.secondCategoryIndex != -1) {
+            goods.setSecondCategoryStr(getCellStringVal(row.getCell(SelfConfig.secondCategoryIndex)));
+        }
+        if (SelfConfig.thirdCategoryIndex != -1) {
+            goods.setThirdCategoryStr(getCellStringVal(row.getCell(SelfConfig.thirdCategoryIndex)));
+        }
         if (SelfConfig.brandIndex != -1) {
             goods.setBrandStr(getCellStringVal(row.getCell(SelfConfig.brandIndex)));
+        }
+        if (SelfConfig.brandIdIndex != -1 && row.getCell(SelfConfig.brandIdIndex) != null) {
+            String brandIdStr = getCellStringVal(row.getCell(SelfConfig.brandIdIndex));
+            if (!brandIdStr.equals("null")) {
+                goods.setBrandId(Double.valueOf(brandIdStr).intValue());
+            }
         }
         if (SelfConfig.salesIndex != -1 && row.getCell(SelfConfig.salesIndex) != null) {
             String salesStr = getCellStringVal(row.getCell(SelfConfig.salesIndex));

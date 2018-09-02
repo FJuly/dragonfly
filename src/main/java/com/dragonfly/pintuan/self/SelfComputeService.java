@@ -8,13 +8,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 public class SelfComputeService extends AbstractComputeService {
 
     private static Logger logger = LoggerFactory.getLogger(SelfComputeService.class);
 
     public void processGoods(Goods goods) {
+        boolean isRule2 = false;
+        boolean isSuit = false;
+
+        // 各种剔除条件
+        if (!preCheck(goods))
+            return;
         Row row = goods.getRow();
         double discount = SelfConfig.discountMap.get(goods.getFirstCategoryStr());
         double downMax = Double.min(Double.min(goods.getPagePrice() * discount,
@@ -44,6 +49,7 @@ public class SelfComputeService extends AbstractComputeService {
         // 计算最终定价
         if (checkPriceRange(rulePrice2, downMax, goods.getPagePrice())) {
             goods.setResultPrice(rulePrice2);
+            isRule2 = true;
         } else {
             goods.setResultPrice((rulePrice1 + rulePrice3) / 2);
         }
@@ -58,16 +64,23 @@ public class SelfComputeService extends AbstractComputeService {
                 return;
             } else {
                 goods.setResultPrice(resultGapPrice);
+                isSuit = true;
             }
         }
         //进行尾数优化
         double beautifulPrice = beautifyPrice(goods.getResultPrice());
-        if (checkPriceRange(beautifulPrice, downMax, goods.getPagePrice())
-                && isSuitPriceGap(beautifulPrice, goods.getPagePrice())) {
+        if (checkPriceRange(beautifulPrice, downMax, goods.getPagePrice()) && isSuitPriceGap(beautifulPrice, goods.getPagePrice())) {
             goods.setResultPrice(beautifulPrice);
+            if (isRule2 && !isSuit && goods.getMinPrice() != 0) {
+                logger.info("test:rule1Price:{}, rule2Price:{}, rule3Price:{},resultPrice:{},skuId={},row:{}", rulePrice1, rulePrice2, rulePrice3, goods.getSkuId(), beautifulPrice, row.getRowNum());
+            }
         } else {
             goods.setResultPrice(halfUp(goods.getResultPrice()));
-            goods.setRemark("尾数优化后不符合区间或最小降价，不进行优化");
+            if (!(checkPriceRange(goods.getResultPrice(), downMax, goods.getPagePrice()) && isSuitPriceGap(goods.getResultPrice(), goods.getPagePrice()))) {
+                goods.setRemark("尾数优化后不符合区间，不优化，价格四舍五入取整不符合区间");
+            } else {
+                goods.setRemark("尾数优化后不符合区间，四舍五入取整符合区间");
+            }
         }
         logger.info("rule1Price:{}, rule2Price:{}, rule3Price:{},skuId={},row:{}", rulePrice1, rulePrice2, rulePrice3, goods.getSkuId(), row.getRowNum());
     }
@@ -85,7 +98,7 @@ public class SelfComputeService extends AbstractComputeService {
             double b = goods.getPagePrice() - a * SelfConfig.startDay;
             logger.info("线性方程->pagePrice:{},downMax:{},a:{},b:{},skuId:{},rowNum:{}", goods.getPagePrice(),
                     goods.getDownMax(), a, b, goods.getSkuId(), goods.getRow().getRowNum());
-            rulePrice3 = halfUp(a * salesByDay + b);
+            rulePrice3 = a * salesByDay + b;
         }
         return rulePrice3;
     }
@@ -103,5 +116,21 @@ public class SelfComputeService extends AbstractComputeService {
             }
         }
         return 0;
+    }
+
+    private boolean preCheck(Goods goods) {
+        if (SelfConfig.excludeBrandList.contains(goods.getBrandStr())) {
+            goods.setRemark("剔除品牌");
+            return false;
+        }
+        if (SelfConfig.secondCateList.contains(goods.getSecondCategoryStr())) {
+            goods.setRemark("剔除类目");
+            return false;
+        }
+        if (SelfConfig.thirdCateList.contains(goods.getThirdCategoryStr())) {
+            goods.setRemark("剔除类目");
+            return false;
+        }
+        return true;
     }
 }

@@ -24,9 +24,10 @@ public class Singleton {
 // 写一个DCL
 class DCLSingleton {
 
-    private static DCLSingleton singleton = null;
+    private static volatile DCLSingleton singleton = null;
 
-    private DCLSingleton() {}
+    private DCLSingleton() {
+    }
 
     public static DCLSingleton getInstance() {
         if (singleton == null) {
@@ -85,5 +86,20 @@ class Color1 {
     static {
         RED = new Color1(1);
         BLUE = new Color1(2);
+    }
+}
+
+// 静态内部类的写法
+class SingleFactory {
+    private static class InstanceHolder {
+        public static final SingleFactory instance = new SingleFactory();
+    }
+
+
+    public static SingleFactory getInstance() {
+        return InstanceHolder.instance;
+    }
+
+    private SingleFactory() {
     }
 }
